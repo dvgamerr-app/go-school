@@ -1,0 +1,87 @@
+ENUM permissionItem {
+  user
+  admin
+}
+
+Table school.university [headercolor: #CA4242] {
+  id int16 [pk, increment]
+  name varchar
+  schedule_levelup timestamp
+}
+
+Table school.user_profressor [headercolor: #126E7A] {
+  university_id int8 [ref: > school.university.id]
+  id int16 [pk]
+  national_id varchar [not null]
+  password varchar
+  en_name varchar [not null]
+  en_surename varchar [not null]
+  th_name varchar
+  th_surename varchar
+  permission permissionItem [default: "user"]
+  registered timestamp [not null]
+  resigned timestamp [default: null]
+  created timestamp [default: "now()"]
+}
+
+Table school.user_collegian [headercolor: #126E7A] {
+  university_id int8 [ref: > school.university.id]
+  id int16 [pk]
+  code varchar [not null]
+  national_id varchar [not null]
+  password varchar
+  en_name varchar [not null]
+  en_surename varchar [not null]
+  th_name varchar
+  th_surename varchar
+  permission permissionItem [default: "user"]
+  registered timestamp [not null]
+  resigned timestamp [default: null]
+  graduation timestamp [default: null]
+  created timestamp [default: "now()"]
+}
+
+Table school.lesson [headercolor: #011B4E] {
+  id int16 [pk]
+  profressor_id int16 [ref: > school.user_profressor.id]
+  subject_code varchar [ref: > school.subject.code]
+  grade_level byte [ref: > school.grade.level]
+  label varchar
+}
+
+Table school.subject [headercolor: #126E7A] {
+  code varchar [pk, not null]
+  label varchar
+  credit int8
+}
+
+Table school.grade [headercolor: #126E7A] {
+  level byte [pk]
+  label varchar [not null]
+  minimum_credit int8
+}
+
+
+Table school.classroom [headercolor: #011B4E] {
+  id int16 [pk]
+  collegian_id int16 [ref: > school.user_collegian.id]
+  grade_level byte [ref: > school.grade.level]
+  label varchar [not null]
+  year uint4 
+  no uint4
+}
+
+Table school.classroom_timetable [headercolor: #2D6512] {
+  classroom_id int16 [pk, ref: > school.classroom.id]
+  lesson_id int16 [pk, ref: > school.lesson.id]
+  time unit2
+  minutes unit4
+}
+
+
+Table school.exam [headercolor: #126E7A] {
+  id int16 [pk]
+  label varchar [not null]
+  description varchar
+  score uint4 [default: 10]
+}
